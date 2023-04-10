@@ -1,3 +1,4 @@
+"""Defines schema and validations for RESTFUL API"""
 from marshmallow import Schema, fields
 
 

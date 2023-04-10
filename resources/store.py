@@ -1,4 +1,4 @@
-from uuid import uuid4
+"""Defines endpoints and for fetching and deleting stores"""
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
@@ -9,6 +9,7 @@ from db import db
 from models import StoreModel
 from schema import StoreSchema
 
+# Initialise module as blueprint
 bp = Blueprint("stores", __name__, description="Operations on stores")
 
 
@@ -16,7 +17,7 @@ bp = Blueprint("stores", __name__, description="Operations on stores")
 class Store(MethodView):
     @bp.response(200, StoreSchema)
     def get(self, store_id):
-        """Get a particular store"""
+        """Get a store"""
         store = StoreModel.query.get_or_404(store_id)
         return store
 

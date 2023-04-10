@@ -1,3 +1,4 @@
+"""Defines endpoints and for fetching, updating, and deleting items"""
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
@@ -7,6 +8,7 @@ from db import db
 from models import ItemModel
 from schema import ItemSchema, ItemUpdateSchema
 
+# Initialize module as blueprint
 bp = Blueprint("items", __name__, description="Operations on items")
 
 
@@ -21,7 +23,7 @@ class ItemList(MethodView):
     @bp.arguments(ItemSchema)
     @bp.response(201, ItemSchema)
     def post(self, item_data):
-
+        """Updates an item/create item"""
         item = ItemModel(**item_data)
         try:
             db.session.add(item)

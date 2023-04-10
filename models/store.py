@@ -1,3 +1,4 @@
+"""Defines Model for Store Entity"""
 from db import db
 
 class StoreModel(db.Model):

@@ -1,3 +1,4 @@
+"""Defines Model for Items Entity"""
 from db import db
 
 class ItemModel(db.Model):
