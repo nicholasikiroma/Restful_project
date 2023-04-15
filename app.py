@@ -8,6 +8,7 @@ import models
 
 from resources.store import bp as store_bp
 from resources.item import bp as item_bp
+from resources.tag import bp as tag_bp
 
 
 def create_app(db_url=None):
@@ -29,6 +30,7 @@ def create_app(db_url=None):
     # Initialise database
     db.init_app(app)
 
+     # Initialise SMOREST
     api = Api(app)
 
     # creates tables before handling requests
@@ -39,5 +41,6 @@ def create_app(db_url=None):
     # Registering item and store blueprints
     api.register_blueprint(item_bp)
     api.register_blueprint(store_bp)
+    api.register_blueprint(tag_bp)
 
     return app
