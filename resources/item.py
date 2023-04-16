@@ -35,7 +35,7 @@ class ItemList(MethodView):
         return item
 
 
-@bp.route("/item/<string:item_id>")
+@bp.route("/item/<int:item_id>")
 class Item(MethodView):
     @bp.response(200, ItemSchema)
     def get(self, item_id):

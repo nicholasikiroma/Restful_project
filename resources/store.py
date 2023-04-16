@@ -1,7 +1,7 @@
 """Defines endpoints and for fetching and deleting stores"""
-from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from flask_jwt_extended import jwt_required
 
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
@@ -13,7 +13,7 @@ from schema import StoreSchema
 bp = Blueprint("stores", __name__, description="Operations on stores")
 
 
-@bp.route("/store/<string:store_id>")
+@bp.route("/store/<int:store_id>")
 class Store(MethodView):
     @bp.response(200, StoreSchema)
     def get(self, store_id):
@@ -21,6 +21,7 @@ class Store(MethodView):
         store = StoreModel.query.get_or_404(store_id)
         return store
 
+    @jwt_required()
     def delete(self, store_id):
         """Delete a store"""
         store = StoreModel.query.get_or_404(store_id)
@@ -38,6 +39,7 @@ class StoreList(MethodView):
         store = StoreModel.query.all()
         return store
 
+    @jwt_required()
     @bp.arguments(StoreSchema)
     @bp.response(201, StoreSchema)
     def post(self, store_data):
