@@ -2,6 +2,8 @@ import os
 from datetime import timedelta
 
 import redis
+import idna
+
 from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
@@ -16,12 +18,14 @@ from resources.item import bp as item_bp
 from resources.tag import bp as tag_bp
 from resources.user import bp as user_bp
 
-
+hostname = idna.encode("rediss://red-cguhiqt269vbmerpe7i0:xlK6CqF2vuGYWDT8ax7DiCOdVzwh8SC9@oregon-redis.render.com").decode("utf-8")
 # Set up redis connection
 # host is the ip of a standalone docker
 # container running redis
 jwt_redis_blocklist = redis.StrictRedis(
-    host="rediss://red-cguhiqt269vbmerpe7i0:xlK6CqF2vuGYWDT8ax7DiCOdVzwh8SC9@oregon-redis.render.com", port=6379, db=0, decode_responses=True
+    host=hostname,
+    port=6379, db=0,
+    decode_responses=True
 )
 
 # Set expiration for jwt token
