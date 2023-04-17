@@ -9,7 +9,6 @@ Flask-Migrate==4.0.4
 flask-smorest==0.41.0
 Flask-SQLAlchemy==3.0.3
 greenlet==2.0.2
-idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
 Mako==1.2.4
@@ -26,3 +25,4 @@ tomli==2.0.1
 typing_extensions==4.5.0
 webargs==8.2.0
 Werkzeug==2.2.3
+flask-redis

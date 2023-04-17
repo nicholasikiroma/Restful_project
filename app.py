@@ -1,8 +1,7 @@
 import os
 from datetime import timedelta
 
-import redis
-import idna
+from flask_redis import FlaskRedis
 
 from flask import Flask, jsonify
 from flask_smorest import Api
@@ -10,7 +9,7 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 
-from db import db
+from db import db, redis
 import models
 
 from resources.store import bp as store_bp
@@ -18,15 +17,9 @@ from resources.item import bp as item_bp
 from resources.tag import bp as tag_bp
 from resources.user import bp as user_bp
 
-hostname = idna.encode("rediss://red-cguhiqt269vbmerpe7i0:xlK6CqF2vuGYWDT8ax7DiCOdVzwh8SC9@oregon-redis.render.com").decode("utf-8")
-# Set up redis connection
-# host is the ip of a standalone docker
-# container running redis
-jwt_redis_blocklist = redis.StrictRedis(
-    host=hostname,
-    port=6379, db=0,
-    decode_responses=True
-)
+
+# access env file
+load_dotenv()
 
 # Set expiration for jwt token
 ACCESS_EXPIRES = timedelta(minutes=30)
@@ -36,9 +29,6 @@ def create_app(db_url=None):
 
     # create instance of flask app
     app = Flask(__name__)
-
-    # access env file
-    load_dotenv()
 
     # base configurations for flask app
     app.config["PROPAGATE_EXCEPTIONS"] = True
@@ -53,9 +43,12 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_KEY")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
-
+    app.config["REDIS_URL"] = os.getenv("REDIS_URL")
     # Initialise database
     db.init_app(app)
+
+    # Initialise redis
+    redis.init_app(app)
 
     # Initialise SMOREST
     api = Api(app)
@@ -70,7 +63,7 @@ def create_app(db_url=None):
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, jwt_payload: dict):
         jti = jwt_payload["jti"]
-        token_in_redis = jwt_redis_blocklist.get(jti)
+        token_in_redis = redis.get(jti)
         return token_in_redis is not None
 
     # Custom error messages for JWT

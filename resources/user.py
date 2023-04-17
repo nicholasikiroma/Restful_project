@@ -5,7 +5,7 @@ from passlib.hash import pbkdf2_sha256
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 
-from db import db
+from db import db, redis
 from models import UserModel
 from schema import UserSchema
 
@@ -83,6 +83,7 @@ class UserLogout(MethodView):
     def delete(self):
         jti = get_jwt()["jti"]
 
-        from app import jwt_redis_blocklist, ACCESS_EXPIRES
-        jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
+        from app import ACCESS_EXPIRES
+
+        redis.set(jti, "", ex=ACCESS_EXPIRES)
         return {"message": "Successfully logged out."}
