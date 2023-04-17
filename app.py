@@ -17,10 +17,6 @@ from resources.item import bp as item_bp
 from resources.tag import bp as tag_bp
 from resources.user import bp as user_bp
 
-
-# access env file
-load_dotenv()
-
 # Set expiration for jwt token
 ACCESS_EXPIRES = timedelta(minutes=30)
 
@@ -29,6 +25,8 @@ def create_app(db_url=None):
 
     # create instance of flask app
     app = Flask(__name__)
+    # access env file
+    load_dotenv()
 
     # base configurations for flask app
     app.config["PROPAGATE_EXCEPTIONS"] = True
