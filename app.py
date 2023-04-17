@@ -21,7 +21,7 @@ from resources.user import bp as user_bp
 # host is the ip of a standalone docker
 # container running redis
 jwt_redis_blocklist = redis.StrictRedis(
-    host="172.17.0.2", port=6379, db=0, decode_responses=True
+    host="redis://red-cguhiqt269vbmerpe7i0", port=6379, db=0, decode_responses=True
 )
 
 # Set expiration for jwt token
