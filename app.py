@@ -21,7 +21,7 @@ from resources.user import bp as user_bp
 # host is the ip of a standalone docker
 # container running redis
 jwt_redis_blocklist = redis.StrictRedis(
-    host="172.17.0.3", port=6379, db=0, decode_responses=True
+    host="172.17.0.2", port=6379, db=0, decode_responses=True
 )
 
 # Set expiration for jwt token
@@ -111,5 +111,8 @@ def create_app(db_url=None):
     api.register_blueprint(store_bp)
     api.register_blueprint(tag_bp)
     api.register_blueprint(user_bp)
+
+    with app.app_context():
+        db.create_all()
 
     return app
