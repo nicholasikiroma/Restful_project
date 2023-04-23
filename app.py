@@ -21,7 +21,7 @@ from resources.user import bp as user_bp
 ACCESS_EXPIRES = timedelta(minutes=30)
 
 
-def create_app(db_url=None):
+def create_app():
 
     # create instance of flask app
     app = Flask(__name__)
@@ -36,8 +36,13 @@ def create_app(db_url=None):
     app.config["OPENAPI_URL_PREFIX"] = "/"
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv(
-        "DATABASE_URL", "sqlite:///data.db")
+
+    # check if posgresql use old dialect
+    uri = os.getenv("DATABASE_URL")
+    if uri and uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = uri or "sqlite:///data.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_KEY")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
